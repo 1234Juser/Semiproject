@@ -39,10 +39,10 @@
                             <p th:text="|타입: ${office.officeType}|"></p>
                         </a>
                         <!-- 수정 버튼 -->
-                        <a th:href="@{'/samusil/admin/officeedit/' + ${storeCode} + '/' + ${office.officeCode}}"
+                        <a th:href="@{'/samusil/admin/officeedit/' + ${office.officeCode}}"
                            class="office-edit-btn">수정</a>
                         <form th:id="'deleteForm' + ${office.officeCode}"
-                              th:action="@{'/samusil/admin/delete/' + ${store.storeCode} + '/' + ${office.officeCode}}"
+                              th:action="@{'/samusil/admin/delete/' + ${storeCode} + '/' + ${office.officeCode}}"
                               method="post" style="display: inline;">
                             <button type="button" class="office-delete-btn"
                                     th:onclick="'if(confirm(\'정말 삭제하시겠습니까?\')) { submitDeleteForm(' + ${office.officeCode} + '); }'">

@@ -34,43 +34,45 @@
                     <fieldset>
                         <legend>필수 입력</legend>
                         <span class="region-select">
-                    <label for="city-select">시 선택 : </label>
-                    <select id="city-select" name="storeCity" required>
-                        <option value="" th:text="선택하세요" selected></option>
-                        <option th:each="city : ${cityList}" th:value="${city}" th:text="${city}"></option>
-                    </select>
-                    <label for="gu-select">시/군/구 선택 : </label>
-                    <select id="gu-select" name="storeGu" required disabled>
-                        <option value="" th:text="선택하세요" disabled selected></option>
-                        <option th:each="gu : ${guList}" th:value="${gu}" th:text="${gu}"></option>
-                    </select>
-                    <label for="name-select">지점 선택 : </label>
-                    <select id="name-select" name="storeName" required disabled>
-                        <option value="" th:text="선택하세요" disabled selected></option>
-                        <option th:each="name : ${nameList}" th:value="${name}" th:text="${name}"></option>
-                    </select>
-                    <label for="type-select">타입 선택 : </label>
-                    <select id="type-select" name="officeType" required>
-                        <option value="" th:text="선택하세요"selected></option>
-                        <option th:each="type : ${typeList}" th:value="${type}" th:text="${type}"></option>
-                    </select>
-                </span>
-                <label for="officeNum">호 실 : </label><input type="number" id="officeNum" name="officeNum" required><br><br>
-                <label for="officePrice">2시간당 금액 : </label><input type="number" id="officePrice" name="officePrice" required><br><br>
-                <div class="info">
-                    <label for="officeThumbnail">썸네일 : </label>
-                    <input type="file" id="officeThumbnail" name="officeThumbnail" accept="image/*" onchange="previewImg(this)" required><br>
-                    <img id="preview" class="preview-image">
-                </div>
-            </fieldset>
-            <input type="submit" value="작성완료">
-        </form>
+                            <label for="city-select">시 선택 : </label>
+                            <select id="city-select" name="storeCity" required>
+                                <option value="" th:text="선택하세요" selected></option>
+                                <option th:each="city : ${cityList}" th:value="${city}" th:text="${city}"></option>
+                            </select>
+                            <label for="gu-select">시/군/구 선택 : </label>
+                            <select id="gu-select" name="storeGu" required disabled>
+                                <option value="" th:text="선택하세요" disabled selected></option>
+                                <option th:each="gu : ${guList}" th:value="${gu}" th:text="${gu}"></option>
+                            </select>
+                            <label for="name-select">지점 선택 : </label>
+                            <select id="name-select" name="storeName" required onchange="setStoreCode()">
+                                <option value="" th:text="선택하세요" disabled selected></option>
+                                <option th:each="name : ${nameList}" th:value="${name}" th:text="${name}"></option>
+                            </select>
+                            <input type="hidden" id="store-code" name="storeCode">
+                            <label for="type-select">타입 선택 : </label>
+                            <select id="type-select" name="officeType" required>
+                                <option value="" th:text="선택하세요"selected></option>
+                                <option th:each="type : ${typeList}" th:value="${type}" th:text="${type}"></option>
+                            </select>
+                        </span>
+                        <span>
+                            <label for="officeNum">호 실 : </label><input type="number" id="officeNum" name="officeNum" required><br><br>
+                            <label for="officePrice">2시간당 금액 : </label><input type="number" id="officePrice" name="officePrice" required><br><br>
+                        </span>
+                        <div class="info">
+                            <label for="officeThumbnail">썸네일 : </label>
+                            <input type="file" id="officeThumbnail" name="officeThumbnail" accept="image/*" onchange="previewImg(this)" required><br>
+                            <img id="preview" class="preview-image">
+                        </div>
+                    </fieldset>
+                    <input type="submit" value="작성완료">
+                </form>
 
         <div th:if="${message}" th:text="${message}"
              th:class="${'message ' + (messageType ?: 'info')}">
         </div>
     </div>
-</section>
         </div>
     </div>
 </main>
@@ -138,46 +140,106 @@
             const selectedGu = guSelect.value;  // 선택된 구 값
 
             if (selectedGu) {
-                // AJAX 호출로 store_name 목록 가져오기
                 fetch(`/store/storeregion/search?gu=${selectedGu}`)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('네트워크 응답에 문제가 있습니다.');
-                        }
-                        return response.json();  // JSON 형식으로 응답 처리
-                    })
+                    .then(response => response.json())
                     .then(data => {
-                        console.log('받아온 데이터:', data); // 디버깅용
+                        console.log('받아온 데이터:', data); // 디버깅용 로그
 
-                        // 드롭다운 초기화 및 옵션 설정
+                        // 드롭다운 초기화
                         nameSelect.innerHTML = '<option value="" disabled selected>선택하세요</option>';
+
                         if (data.length > 0) {
                             data.forEach(store => {
                                 const option = document.createElement('option');
-                                option.value = store.storeCode;  // 예: 지점 코드
-                                option.textContent = store.storeName;  // 예: 지점 이름
+                                option.value = store.storeCode;  // storeCode 값 설정
+                                option.textContent = store.storeName;  // storeName 값 설정
                                 nameSelect.appendChild(option);
                             });
                             nameSelect.disabled = false;  // 활성화
                         } else {
-                            // 결과가 없을 때 비활성화 및 메시지 출력
                             console.warn('해당 구에 대한 지점 데이터가 없습니다.');
                             nameSelect.disabled = true;
                         }
                     })
                     .catch(error => {
-                        console.error('데이터를 가져오는 중 오류가 발생했습니다:', error);
+                        console.error('데이터를 가져오는 중 오류 발생:', error);
                         nameSelect.innerHTML = '<option value="" disabled selected>선택 실패</option>';
                         nameSelect.disabled = true;
                     });
             } else {
-                // gu 값 없을 시 초기화
                 nameSelect.innerHTML = '<option value="" disabled selected>선택하세요</option>';
                 nameSelect.disabled = true;
             }
         });
     });
-
 </script>
+<script th:inline="javascript">
+    /* Thymeleaf를 통해 서버에서 storeList 가져오기 */
+    var storeList = /*[[${storeList}]]*/ [];
+
+    // store_name과 store_code 매핑을 위한 객체 생성
+    var storeCodes = {};
+    storeList.forEach(function(store) {
+        storeCodes[store.storeName] = store.storeCode;
+    });
+
+    // storeName 선택 시 storeCode 값을 설정하는 함수
+    function setStoreCode() {
+        const select = document.getElementById('name-select');
+        const storeName = select.value;
+
+        fetch('/stores/store-code?storeName=' + encodeURIComponent(storeName))
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('API 호출 실패');
+                }
+                return response.text();
+            })
+            .then(data => {
+                if(data === null || data === ""){
+                    alert("해당 지점명을 DB에서 찾을 수 없습니다.");
+                    return;
+                }
+                document.getElementById('store-code').value = data;
+            })
+            .catch(error => {
+                console.error(error);
+                alert('storeCode를 가져오는 데 실패했습니다: ' + error.message);
+            });
+
+        // var storeName = document.getElementById("name-select").value;
+
+        // store_name에 해당하는 store_code 설정
+        // if (storeCodes[storeName]) {
+        //     document.getElementById("store-code").value = storeCodes[storeName];
+        // } else {
+        //     document.getElementById("store-code").value = "";   // 여기서 빈 값이 전달되는 것을 방지
+        // }
+    }
+
+    // storeName을 선택하면 storeCode 값을 업데이트
+    document.getElementById("name-select").addEventListener("change", function() {
+        var selectedStoreName = this.value;
+        var storeCode = storeCodes[selectedStoreName];  // storeCodes는 미리 정의된 객체로 storeName -> storeCode 매핑
+
+        // storeCode 값을 hidden input 등에 설정
+        document.getElementById("store-code").value = storeCode;
+    });
+</script>
+<!--<script>-->
+<!--    async function setStoreCode() {-->
+<!--        const storeName = document.getElementById('name-select').value;-->
+
+<!--        // 엔드포인트를 수정하거나 새로 만들 필요가 있음 (예시: '/stores/store-code?name=' + storeName)-->
+<!--        const response = await fetch('/stores/store-code?name=' + encodeURIComponent(storeName));-->
+<!--        if (response.ok) {-->
+<!--            const storeCode = await response.json();-->
+<!--            document.getElementById('store-code').value = storeCode;-->
+<!--        } else {-->
+<!--            alert("storeCode를 가져오는 데 실패했습니다.");-->
+<!--        }-->
+<!--    }-->
+<!--</script>-->
+
 </body>
 </html>

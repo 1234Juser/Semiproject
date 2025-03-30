@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -200,22 +201,28 @@ public class StoreService {
             throw new IllegalArgumentException("선택 지점이 존재하지 않습니다.");
         }
 
-        // 이미지 파일 삭제
+        // 이미지 파일 삭제 또는 DB에서 URL 제거
         if (store.getStoreThumbnailUrl() != null && !store.getStoreThumbnailUrl().isEmpty()) {
-            String filePathStr = store.getStoreThumbnailUrl();
+            String imageUrl = store.getStoreThumbnailUrl();
 
-            if (store.getStoreThumbnailUrl().startsWith("http")) {
-                throw new IllegalArgumentException("파일 삭제는 서버 내부 파일에 대해서만 가능합니다.");
+            if (imageUrl.startsWith("https")) {
+                // URL만 저장된 경우 → DB에서 NULL로 업데이트
+                storeMapper.deleteStoreImageUrl(storeCode);
+            } else {
+                // 서버 내부 파일이면 삭제
+                try {
+                    Path filePath = Paths.get(imageUrl);
+                    Files.deleteIfExists(filePath);
+                } catch (Exception e) {
+                    throw new RuntimeException("이미지 삭제 중 오류가 발생했습니다.", e);
+                }
             }
-            try {
-                // 스토어의 스토어썸네일의 경로 가져오기
-                Path filePath = Paths.get(store.getStoreThumbnailUrl());
-                Files.deleteIfExists(filePath);
-            } catch (Exception e) {
-                throw new RuntimeException("이미지 삭제 중 오류가 발생했습니다.", e);
-            }
+            // 지점 삭제
+            storeMapper.deleteStore(storeCode);
         }
-        // 상품 정보 삭제
-        storeMapper.deleteStore(storeCode);
+    }
+
+    public StoreDTO findStoreByName(String storeName) {
+        return storeMapper.findStoreByName(storeName);
     }
 }

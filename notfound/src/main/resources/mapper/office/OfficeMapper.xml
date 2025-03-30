@@ -39,12 +39,55 @@
     </select>
     <select id="getOfficeListByStore" resultType="com.office.notfound.samusil.model.dto.OfficeDTO">
         SELECT office_code,
-               office_num
+               store_code,
+               office_type,
+               office_num,
+               office_price,
+               office_thumbnail_url
         FROM tbl_office WHERE store_code = #{storeCode}
     </select>
-    <delete id="deleteOfficeByStoreAndOfficeCode" parameterType="int">
-        DELETE FROM tbl_office
-        WHERE store_code = #{storeCode} AND office_code = #{officeCode}
+
+    <delete id="deleteOfficeRelated" parameterType="int">
+        DELETE FROM tbl_office_related WHERE office_code = #{officeCode}
     </delete>
+    <delete id="deleteOffice" parameterType="int">
+        DELETE FROM tbl_office WHERE office_code = #{officeCode}
+    </delete>
+
+
+    <select id="getOfficeTypes" resultType="string">
+        SELECT DISTINCT office_type
+        FROM tbl_office
+    </select>
+
+    <select id="findOfficeByCode" resultType="OfficeDTO" parameterType="int">
+        SELECT office_code, office_num, office_type, office_price, store_code
+        FROM tbl_office
+        WHERE office_code = #{officeCode}
+    </select>
+
+    <update id="updateOffice" parameterType="com.office.notfound.samusil.model.dto.OfficeDTO">
+        UPDATE tbl_office
+        SET office_type = #{officeType},
+            office_num = #{officeNum},
+            office_price = #{officePrice}
+        <if test="officeThumbnailUrl != null and officeThumbnailUrl != ''">
+            , office_thumbnail_url = #{officeThumbnailUrl}
+        </if>
+        WHERE office_code = #{officeCode}
+    </update>
+
+    <insert id="insertOffice" parameterType="com.office.notfound.samusil.model.dto.OfficeDTO">
+        INSERT INTO tbl_office
+        (store_code, office_type, office_num, office_price, office_thumbnail_url)
+        VALUES(
+               #{storeCode},
+               #{officeType},
+               #{officeNum},
+               #{officePrice},
+               #{officeThumbnailUrl}
+              )
+    </insert>
+
 
 </mapper>

@@ -77,7 +77,10 @@
         FROM
             tbl_store
         WHERE
-            store_city = #{city} AND store_gu = #{gu}
+        store_gu = #{gu}
+        <if test="city != null and city != ''">
+            AND store_city = #{city}
+        </if>
         ORDER BY
             store_name;
     </select>
@@ -146,4 +149,16 @@
         DELETE FROM tbl_store
         WHERE store_code = #{storeCode}
     </delete>
+    <update id="deleteStoreImageUrl" parameterType="com.office.notfound.store.model.dto.StoreDTO">
+        UPDATE tbl_store
+        SET store_thumbnail_url = NULL
+        WHERE store_code = #{storeCode}
+    </update>
+<!-- storeName 선택시 storeCode 연동-->
+    <select id="findStoreByName" parameterType="String" resultType="com.office.notfound.store.model.dto.StoreDTO">
+        SELECT store_code, store_name
+        FROM tbl_store
+        WHERE store_name = #{storeName}
+    </select>
+
 </mapper>

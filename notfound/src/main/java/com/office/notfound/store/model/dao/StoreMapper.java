@@ -29,4 +29,7 @@ public interface StoreMapper {
 
     String findImageByStoreCode(int storeCode);
 
+    void deleteStoreImageUrl(int storeCode);
+
+    StoreDTO findStoreByName(String storeName);
 }

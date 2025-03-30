@@ -94,7 +94,7 @@ CREATE TABLE IF NOT EXISTS tbl_store (
                                          latitude DOUBLE NOT NULL COMMENT '지점 위도',
                                          longitude DOUBLE NOT NULL COMMENT '지도 경도',
                                          description VARCHAR(255) NOT NULL COMMENT '지점 소개',
-                                         store_thumbnail_url VARCHAR(255) NOT NULL COMMENT '지점썸네일 URL',
+                                         store_thumbnail_url VARCHAR(255) NULL COMMENT '지점썸네일 URL',
                                          store_img1_url VARCHAR(255) NULL COMMENT '공용공간1사진 URL',
                                          store_img2_url VARCHAR(255) NULL COMMENT '공용공간2사진 URL',
                                          store_img3_url VARCHAR(255) NULL COMMENT '공용공간3사진 URL',
@@ -199,5 +199,8 @@ CREATE TABLE tbl_review (
                             FOREIGN KEY (member_code) REFERENCES tbl_member(member_code) ON DELETE CASCADE,
                             FOREIGN KEY (payment_code) REFERENCES tbl_payment(payment_code) ON DELETE CASCADE
 );
+
+ALTER TABLE tbl_office DROP FOREIGN KEY fk_store_code;
+ALTER TABLE tbl_office ADD CONSTRAINT fk_store_code FOREIGN KEY (store_code) REFERENCES tbl_store(store_code) ON DELETE CASCADE;
 
 COMMIT;
