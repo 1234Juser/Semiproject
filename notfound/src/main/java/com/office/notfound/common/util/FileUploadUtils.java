@@ -122,7 +122,7 @@ public class FileUploadUtils {
         officeThumbnail.transferTo(target);
 
         /* 저장된 파일 이름 반환 */
-        return "/img/store/" + savedFileName;
+        return "/image/store/" + savedFileName;
     }
 
     public static boolean deleteOfficeFile(String uploadDir, String fileName) {
