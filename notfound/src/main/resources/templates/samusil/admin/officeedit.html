@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <link rel="stylesheet" href="/css/store/officeedit.css">
+    <title>Title</title>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<main>
+    <div class="mypage-container">
+        <!--    사이드바    -->
+        <div class="side-menu">
+            <ul>
+                <li><a href="/member/adminmypage">개인정보변경</a></li>
+                <li><a href="/member/list">회원정보조회</a></li>
+                <li><a href="/store/admin/storemanage">매장관리</a></li>
+                <li><a href="/admin/reservation/search">예약관리</a></li>
+                <li><a href="/admin/payment/search">결제관리</a></li>
+                <li><a href="/review/my-reviews">리뷰관리</a></li>
+                <li><a href="/event/list">이벤트관리</a></li>
+                <li><a href="/inquiry/list">1대1관리</a></li>
+                <li><a href="/faq/list">FAQ관리</a></li>
+            </ul>
+        </div>
+
+        <div class="main-content">
+            <h2 th:text="'지점 코드: ' + ${storeCode} + '의 사무실' + ${office.officeNum} + '호'" style="margin-bottom: 20px;"></h2><br>
+            <div class="office-list">
+                <form th:action="@{'/samusil/admin/officeedit/' + ${office.officeCode}}" method="post" encType="multipart/form-data" th:object="${office}">
+                    <fieldset>
+                        <legend>필수 입력</legend>
+                        <label for="officeType">타입 : </label>
+                        <select id="officeType" name="officeType" th:field="${office.officeType}" required>
+                            <option value="" disabled selected>타입을 선택하세요</option>
+                            <!-- officeTypes 목록을 이용해 드롭다운 옵션 생성 -->
+                            <option th:each="type : ${officeTypes}" th:value="${type}" th:text="${type}"
+                                    th:selected="${office.officeType == type}"></option>
+                        </select><br><br>
+                        <label for="officeNum">호 실 : </label><input type="text" id="officeNum" name="officeNum" th:field="${office.officeNum}" required><br>
+                        <label for="officePrice">2시간당 금액 : </label><input type="text" id="officePrice" name="officePrice" th:field="${office.officePrice}" required><br>
+                        <label for="officeThumbnail">썸네일 : </label>
+                        <input type="file" id="officeThumbnail" name="newImage" accept="image/*" onchange="previewNewImage(this)"><br>
+                        <img id="preview" class="preview-image">
+                        <img th:if="${office.officeThumbnailUrl != null}"
+                             th:src="@{${office.officeThumbnailUrl}}"
+                             id="currentImagePreview" class="preview-image">
+                        <img id="newImagePreview" class="preview-image" style="display:none;">
+                    </fieldset>
+                    <input type="submit" value="수정완료" class="submit-btn">
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        function previewNewImage(input) {
+            const preview = document.getElementById('newImagePreview'); // 새 이미지 미리보기 태그
+            const currentImage = document.getElementById('currentImagePreview'); // 기존 이미지 미리보기
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'inline';
+                    if (currentImage) currentImage.style.display = 'none';
+                    // 새 이미지 미리보기 시 기존 이미지는 숨김
+                }
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                preview.style.display = 'none';
+                if (currentImage) currentImage.style.display = 'inline'; // 파일 선택 취소 시 기존 이미지 다시 보임
+            }
+        }
+    </script>
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</main>
+</body>
+</html>

@@ -1,0 +1,66 @@
+/* 하이퍼링크 기본 스타일 제거 */
+a {
+    color: inherit; /* 텍스트 색을 부모 요소에서 상속받음 */
+    text-decoration: none; /* 밑줄 제거 */
+}
+/* 마우스를 올렸을 때 스타일 변경 */
+a:hover {
+    color: gainsboro; /* 원하는 색으로 변경 (예: 파란색) */
+    text-decoration: underline; /* 밑줄을 다시 넣을 수도 있음 */
+}
+/* 마이페이지 컨테이너 */
+.mypage-container {
+    display: flex;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    gap: 50px; /* 사이드바와 메인 콘텐츠 사이 간격 */
+}
+/* 사이드 메뉴 스타일 */
+.side-menu {
+    width: 150px;
+    background-color: #f9f9f9; /* 연한 배경 */
+    padding: 20px;
+    border: 2px solid #ccc; /* 테두리 추가 */
+    border-radius: 8px; /* 모서리 둥글게 */
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); /* 약간의 그림자 */
+    position: relative;
+    top: 20px; /* 살짝 아래로 내리기 */
+    flex-shrink: 0; /* 크기 유지 */
+}
+.side-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.side-menu ul li {
+    margin-bottom: 10px;
+}
+.side-menu ul li a {
+    display: block;
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    padding: 10px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+.side-menu ul li a:hover {
+    background-color: #ddd; /* 마우스 올릴 때 효과 */
+}
+/* 메인 콘텐츠 스타일 */
+.main-content {
+    width: 1000px; /* 적당한 가로 길이 */
+    background-color: #ffffff; /* 흰색 배경 */
+    padding: 20px;
+    border: 2px solid #ccc; /* 테두리 추가 */
+    border-radius: 8px; /* 모서리 둥글게 */
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+    position: relative;
+    top: 20px; /* 살짝 아래로 내리기 */
+    margin: 0; /* 가운데 정렬 */
+}
+.preview-image{
+    width: 300px;
+    height: 300px;
+}
