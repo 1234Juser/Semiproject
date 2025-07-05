@@ -1,5 +1,4 @@
 
-[404officenotfound발표자료_수정_최종.pdf](https://github.com/user-attachments/files/19445435/404officenotfound._._.pdf)
 
 ![Image](https://github.com/user-attachments/assets/96920c3f-b985-4d5e-9ac3-76e9baa90e60)
 
